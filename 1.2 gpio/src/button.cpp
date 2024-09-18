@@ -34,9 +34,9 @@ bool Button::relize(){
 }
 
 int Button::status(){
-    if (press()){
+    if (hold()){
         return 1;
-    }else if(hold()){
+    }else if(press()){
         return 2;
     }else if(relize()){
         return 0;
