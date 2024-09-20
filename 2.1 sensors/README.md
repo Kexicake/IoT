@@ -9,10 +9,6 @@
 
 https://registry.platformio.org/libraries
 
-```
-https://registry.platformio.org/libraries
-```
-
 Данная платформа имеет кучу оригинальных библиотек, которые могут нам пригодится при решение лабораторных работ по данной дисциплине.
 
 Для данной работы нам нужны конкретно эти:
@@ -24,14 +20,16 @@ https://registry.platformio.org/libraries
 
 Для установки данных библиотек в Path нужно добавить папку скриптов PlatformIO
 ```
+C:\Users\(USER)\.platformio\penv\Scripts\
+```
+(Вместо (USER) пишем имя своего пользователя как в проводнике)
 
-```
 Затем написать в консоль, открытую в директории вашего проекта в который нужно установить библиотеку 
-```
+```sh
 pio pkg install --library "mbed-strikewolf/ADXL345_I2C"
 ```
 и
-```
+```sh
 pio pkg install --library "mbed-nicjryder/RangeFinder"
 ```
 
