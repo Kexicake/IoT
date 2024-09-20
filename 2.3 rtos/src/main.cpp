@@ -32,7 +32,7 @@ void led_ded(){
 int main(){
     while (1)
     {
-        if(butt.status() == 2){
+        if(butt.status() == 1){
             if (led_st)
                 led_thread.terminate();
             else
