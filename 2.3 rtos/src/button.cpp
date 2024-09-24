@@ -1,33 +1,46 @@
 #include "mbed.h"
 #include "button.h"
 
-Button::Button(PinName PinBut) : myButton(PinBut){
+
+/*
+    Реализация обработки кнопки без использования ртос(потоков и тикеров)
+    Реализация простоя и банальная, создан таймер который позволяет сгладить дребезг при нажатии на кнопку.
+    Так же добавлена проддерка ардуино мода.
+*/
+Button::Button(PinName PinBut, bool ArduioMode = 0) : myButton(PinBut){
     myButton.mode(PullUp);
     timer.start();
 }
+
 bool Button::press(){
-    if (myButton && !flag && timer.read_ms() - btnTimer > 100) {
+    if (ArduinoMode?myButton:!myButton && !flag && timer.read_ms() - btnTimer > 100) {
         flag = true;
         btnTimer = timer.read_ms();
-        //printf("Button state is: press\n");
+        #ifdef DEBUG
+            printf("Button state is: press\n");
+        #endif
         return 1;
     }
     return 0;
 }
 bool Button::hold(){
-    if (myButton && flag && timer.read_ms() - btnTimer > 500) {
+    if (ArduinoMode?myButton:!myButton && flag && timer.read_ms() - btnTimer > 500) {
         flag = true;
         btnTimer = timer.read_ms();
-        //printf("Button state is: hoooold\n");
+        #ifdef DEBUG
+            printf("Button state is: hoooold\n");
+        #endif
         return 1;
     }
     return 0;
 }
 bool Button::relize(){
-    if (!myButton && flag && timer.read_ms() - btnTimer > 100) {
+    if (ArduinoMode?!myButton:myButton && flag && timer.read_ms() - btnTimer > 100) {
         flag = false;
         btnTimer = timer.read_ms();
-        //printf("Button state is: relise\n");
+        #ifdef DEBUG
+            printf("Button state is: relise\n");
+        #endif
         return 1;
     } 
     return 0;

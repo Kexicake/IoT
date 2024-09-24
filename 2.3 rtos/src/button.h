@@ -7,10 +7,11 @@ class Button {
     private: 
         Timer timer, start;
         bool flag = false;
+        bool ArduinoMode;
         long long btnTimer = 0;
         DigitalIn myButton;
     public:
-        Button(PinName PinBut);
+        Button(PinName PinBut, bool ArduinoMode = 0);
         bool press();
         bool hold();
         bool relize();
