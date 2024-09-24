@@ -2,8 +2,8 @@
 #include <ADXL345_I2C.h>
 #include <RangeFinder.h>
 
-Ticker light_ticker;
-Ticker range_ticker;
+Thread light_thread;
+Thread range_thread;
 
 AnalogIn light_sencor(PA_1);
 ADXL345_I2C accelerometer(I2C_SDA,I2C_SCL);
@@ -17,20 +17,25 @@ int readings[3] = {0, 0, 0};
 void lightSensor(){
     light = light_sencor.read() * 100;
     printf("Light: %f\n", light);
+    fflush(stdout);
+    thread_sleep_for(1000);
 }
 
 void rangeFinder(){
     range = rf.read_m();
     if(range == -1.0){ // если есть ошибки подключения или дальше 4-5 метров
         printf("Timeout Error.\n");
+        fflush(stdout);
     }else{
         printf("Distance = %f m.\n", range);
+        fflush(stdout);
     }
+    thread_sleep_for(500);
 }
 
 int main(){
-    light_ticker.attach(lightSensor, 1000ms);
-    range_ticker.attach(rangeFinder, 500ms);
+    light_thread.start(&lightSensor);
+    range_thread.start(&rangeFinder);
     printf("Starting ADXL345 text...\n");
 	
 
