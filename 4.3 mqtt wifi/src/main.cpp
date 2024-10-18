@@ -53,36 +53,33 @@ int scan_demo(WiFiInterface *wifi) {
     ap = new WiFiAccessPoint[count];
     count = wifi->scan(ap, count);
 
-    if (count <= 0)
-    {
+    if (count <= 0){
         printf("scan() failed with return value: %d\n", count);
         return 0;
     }
 
-    for (int i = 0; i < count; i++)
-    {
+    for (int i = 0; i < count; i++){
         printf("Network: %s secured: %s BSSID: %hhX:%hhX:%hhX:%hhx:%hhx:%hhx RSSI: %hhd Ch: %hhd\n", ap[i].get_ssid(),
                sec2str(ap[i].get_security()), ap[i].get_bssid()[0], ap[i].get_bssid()[1], ap[i].get_bssid()[2],
                ap[i].get_bssid()[3], ap[i].get_bssid()[4], ap[i].get_bssid()[5], ap[i].get_rssi(), ap[i].get_channel());
     }
+
     printf("%d networks available.\n", count);
 
     delete[] ap;
     return count;
 }
-void messageArrived(MQTT::MessageData& md)
-{
+void messageArrived(MQTT::MessageData& md){
     MQTT::Message &message = md.message;
     printf("Message arrived: qos %d, retained %d, dup %d, packetid %d\r\n", message.qos, message.retained, message.dup, message.id);
     printf("Payload %.*s\r\n", message.payloadlen, (char*)message.payload);
     ++arrivedcount;
 }
 
-void mqtt_demo(WiFiInterface *wifi)
-{
-    char* topic = "testtp"; 
-    char* hostname = "192.168.21.240"; // Поменять и вынести в определение
-    int port = 1884; // То же самое что и сверху
+void mqtt_demo(WiFiInterface *wifi){
+    char* topic = MBED_CONF_APP_MQTT_TOPIC; 
+    char* hostname = MBED_CONF_APP_MQTT_HOSTNAME; 
+    int port = MBED_CONF_APP_MQTT_PORT; 
     float version = 0.6;
 
     TCPSocket socket;
@@ -96,8 +93,7 @@ void mqtt_demo(WiFiInterface *wifi)
     socket.open(wifi);
     printf("Opened socket\n\r");
     int rc = socket.connect(a);
-    if (rc != 0)
-    {
+    if (rc != 0){
         printf("rc from TCP connect is %d\r\n", rc);
         return;
     }
@@ -105,25 +101,21 @@ void mqtt_demo(WiFiInterface *wifi)
         printf("Connected socket\n\r");
 
     MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
-    data.MQTTVersion = 3;
-    data.clientID.cstring = "mqttx_smt32";
-    data.username.cstring = "test";
-    data.password.cstring = "pass";
+    data.MQTTVersion = MBED_CONF_APP_MQTT_VERSION;
+    data.clientID.cstring = MBED_CONF_APP_MQTT_CLIENT_ID;
+    data.username.cstring = MBED_CONF_APP_MQTT_USERNAME;
+    data.password.cstring = MBED_CONF_APP_MQTT_PASSWORD;
 
-    if ((rc = client.connect(data)) != 0)
-    {
+    if ((rc = client.connect(data)) != 0){
         printf("rc from MQTT connect is %d\r\n", rc);
         return;
-    }
-    else
+    }else
         printf("MQTT client connected\n\r");
 
-    if ((rc = client.subscribe(topic, MQTT::QOS2, messageArrived)) != 0)
-    {
+    if ((rc = client.subscribe(topic, MQTT::QOS2, messageArrived)) != 0){
         printf("rc from MQTT subscribe is %d\r\n", rc);
         return;
-    }
-    else
+    }else
         printf("MQTT client subscribed\n\r");
 
     MQTT::Message message;
