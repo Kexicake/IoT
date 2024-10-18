@@ -3,6 +3,7 @@
 #include "MQTTmbed.h"
 #include "SpwfSAInterface.h"
 #include "MQTTClientMbedOs.h"
+#include "MQTTNetworkUtil.h"
 
 volatile int arrivedcount = 0;
 SpwfSAInterface stmWifi;
@@ -79,9 +80,9 @@ void messageArrived(MQTT::MessageData& md)
 
 void mqtt_demo(WiFiInterface *wifi)
 {
-    char* topic = "mbed-sample";
-    char* hostname = "192.168.1.18";
-    int port = 1883;
+    char* topic = "testtp"; 
+    char* hostname = "192.168.21.240"; // Поменять и вынести в определение
+    int port = 1884; // То же самое что и сверху
     float version = 0.6;
 
     TCPSocket socket;
@@ -105,9 +106,9 @@ void mqtt_demo(WiFiInterface *wifi)
 
     MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
     data.MQTTVersion = 3;
-    data.clientID.cstring = "random_unique_client_id";
-    data.username.cstring = "myusername";
-    data.password.cstring = "mypassword";
+    data.clientID.cstring = "mqttx_smt32";
+    data.username.cstring = "test";
+    data.password.cstring = "pass";
 
     if ((rc = client.connect(data)) != 0)
     {
@@ -153,6 +154,12 @@ void mqtt_demo(WiFiInterface *wifi)
         client.yield(100);
 
     printf("\r\n\n");
+
+    MQTTClient::messageHandler mh;
+    if(rc = client.setMessageHandler(topic, mh)){
+        printf("%s", mh);
+    } 
+
     if ((rc = client.unsubscribe(topic)) != 0)
         printf("rc from unsubscribe was %d\r\n", rc);
     else
@@ -197,10 +204,6 @@ int main()
     printf("MAC: %s\n", wifi->get_mac_address());
     wifi->get_ip_address(&sa);
     printf("IP: %s\r\n", sa.get_ip_address());
-    wifi->get_netmask(&sa);
-    printf("Netmask: %s\r\n", sa.get_ip_address());
-    wifi->get_gateway(&sa);
-    printf("Gateway: %s\r\n", sa.get_ip_address());
     printf("RSSI: %d\n\n", wifi->get_rssi());
 
     mqtt_demo(wifi);
