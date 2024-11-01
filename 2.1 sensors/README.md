@@ -18,6 +18,13 @@ https://registry.platformio.org/libraries
 
 Как понятно из названий, первая нужная для гироскопа, а вторая для сонара.
 
+
+Что бы использовать библиотеки в проекте даже ничего качать не надо просто вставляете в platformio.ini эти две сточки 
+```
+    mbed-strikewolf/ADXL345_I2C@0.0.0+sha.a7184ee0a913
+	mbed-nickryder/RangeFinder@0.0.0+sha.cf496fb70317
+```
+## Если не вышло установить автоматически
 Для установки данных библиотек в Path нужно добавить папку скриптов PlatformIO
 ```
 C:\Users\(USER)\.platformio\penv\Scripts\
